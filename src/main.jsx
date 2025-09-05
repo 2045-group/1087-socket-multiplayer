@@ -7,12 +7,17 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import Home from './pages/Home.jsx';
+import Bubble from './pages/Bubble.jsx';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
   },
+  {
+    path: "/bubble",
+    element: <Bubble />
+  }
 ]);
 createRoot(document.getElementById('root')).render(
   <StrictMode>
