@@ -14,7 +14,7 @@ const Bubble = () => {
 
     useEffect(() => {
         socket.on("new_user", (malumot) => {
-            setUsers([...users, malumot])
+            setUsers(malumot)
         })
 
         return () => {
@@ -26,7 +26,7 @@ const Bubble = () => {
         <div className='p-5 h-screen'>
             <p>Users {users.length}</p>
             <div className='border border-red-400 h-full rounded-xl'>
-                {users.length > 0 && users.map((user, index) => <div key={index} className='flex items-center justify-center gap-2 rounded-full size-14 border border-red-400 m-2'>{user.name}</div>)}
+                {users.length > 0 && users.map((user, index) => <div key={index} className='flex items-center justify-center gap-2 rounded-full size-14 border text-xs border-red-400 m-2'>{user.name}</div>)}
             </div>
         </div>
     )
