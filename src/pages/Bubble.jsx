@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useMemo } from 'react'
 import { socket } from '../socket'
 
 const ARENA_W = 1400
@@ -8,27 +8,53 @@ const MOVE_INTERVAL = 50 // ms
 const MIN_SIZE = 56 // Minimum bubble size
 const MAX_SIZE = 200 // Maximum bubble size
 
+// ... senga tegma: ARENA_W, ARENA_H, ...
+
+// --- 1) Helper: nom yaratish va localStorage’da saqlash
+const ADJECTIVES = [
+    'Swift', 'Brave', 'Silent', 'Mighty', 'Shadow', 'Turbo', 'Lucky', 'Cosmic',
+    'Neon', 'Crimson', 'Golden', 'Frost', 'Inferno', 'Aqua', 'Cyber', 'Quantum'
+]
+const NOUNS = [
+    'Tiger', 'Falcon', 'Wolf', 'Viper', 'Eagle', 'Panther', 'Dragon', 'Shark',
+    'Phoenix', 'Raven', 'Leopard', 'Cobra', 'Bison', 'Rhino', 'Gorilla', 'Lynx'
+]
+
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)] }
+function makeName() {
+    const adj = pick(ADJECTIVES)
+    const noun = pick(NOUNS)
+    const num = String(Math.floor(1000 + Math.random() * 9000)) // 4 ta raqam
+    return `${adj}${noun}${num}`
+}
+
+function getOrCreatePlayerName() {
+    const KEY = 'bubble_random_name'
+    let name = localStorage.getItem(KEY)
+    if (!name) {
+        name = makeName()
+        localStorage.setItem(KEY, name)
+    }
+    return name
+}
 const Bubble = () => {
     const [users, setUsers] = useState([])
     const [currentUser, setCurrentUser] = useState(null)
     const [foodPos, setFoodPos] = useState({ x: 0, y: 0 })
-    const [gameStats, setGameStats] = useState({
-        topScore: 0,
-        lastAction: null
-    })
-
+    const [gameStats, setGameStats] = useState({ topScore: 0, lastAction: null })
     const keysPressed = useRef(new Set())
     const moveInterval = useRef(null)
 
-    // Calculate bubble size based on score
-    const calculateBubbleSize = (score) => {
-        return Math.min(MIN_SIZE + (score * 8), MAX_SIZE)
-    }
+    // --- 2) Nomni bir marta hisoblab olamiz
+    const playerName = useMemo(() => getOrCreatePlayerName(), [])
 
-    // Join game
+    // Calculate bubble size...
+    const calculateBubbleSize = (score) => Math.min(MIN_SIZE + (score * 8), MAX_SIZE)
+
+    // --- 3) Join game: endi random nom yuboramiz
     useEffect(() => {
-        socket.emit('join_game', { name: 'Bekzod' })
-    }, [])
+        socket.emit('join_game', { name: playerName })
+    }, [playerName])
 
     // Socket listeners
     useEffect(() => {

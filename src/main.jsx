@@ -9,6 +9,7 @@ import { Provider } from 'react-redux';
 import { persistor, store } from './store/store.js';
 import { PersistGate } from 'redux-persist/integration/react';
 import ErrorPage from './pages/ErrorPage.jsx';
+import App from './App.jsx';
 
 // Lazily load pages for Suspense
 const AppLayout = lazy(() => import('./App.jsx'));
@@ -24,7 +25,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <AppLayout />
+      <Bubble />
     ),
     errorElement: <ErrorPage />,   // 👈 qo‘shildi
     children: [
@@ -38,7 +39,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "bubble",
+        path: "/bubble",
         element: (
           <ProtectedRoute>
             <Bubble />
