@@ -1,25 +1,42 @@
+// src/App.jsx
 import React from "react";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { logoutThunk } from "./features/auth/authThunks"; // вверх
 
-// Agar sizda auth selectorlar bo'lsa ulardan foydalaning:
+// вынести селектор в отдельный файл / модуль было бы лучше, но пока так:
 const selectUser = (state) => state.auth?.user;
-import { logoutThunk } from "./features/auth/authThunks";
 
 export default function App() {
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
-  const { pathname } = useLocation();
+
+  const handleLogout = () => {
+    // если logoutThunk возвращает промис — можно await/then, но здесь просто диспатчим
+    dispatch(logoutThunk());
+  };
 
   return (
     <div className="min-h-screen bg-base-200">
-      <div className="navbar bg-base-100 border-b">
-        <div className="container mx-auto px-4 flex gap-2">
+      <header className="navbar bg-base-100 border-b">
+        <div className="container mx-auto px-4 flex items-center gap-2">
           <Link to="/" className="btn btn-ghost text-xl">App</Link>
 
-          <div className="ml-auto flex items-center gap-2">
-            <Link to="/" className={`btn btn-ghost ${pathname === "/" ? "btn-active" : ""}`}>Home</Link>
-            <Link to="/bubble" className={`btn btn-ghost ${pathname === "/bubble" ? "btn-active" : ""}`}>Bubble</Link>
+          <nav className="ml-auto flex items-center gap-2">
+            <NavLink
+              to="/"
+              end
+              className={({ isActive }) => `btn btn-ghost ${isActive ? "btn-active" : ""}`}
+            >
+              Home
+            </NavLink>
+
+            <NavLink
+              to="/bubble"
+              className={({ isActive }) => `btn btn-ghost ${isActive ? "btn-active" : ""}`}
+            >
+              Bubble
+            </NavLink>
 
             {!user ? (
               <>
@@ -27,18 +44,24 @@ export default function App() {
                 <Link to="/register" className="btn btn-primary">Register</Link>
               </>
             ) : (
-
-              <button className="btn btn-outline" onClick={() => dispatch(logoutThunk())}>
-                Logout
-              </button>
+              <>
+                <span className="px-2 hidden sm:inline">Hi, {user.name || user.email}</span>
+                <button
+                  className="btn btn-outline"
+                  onClick={handleLogout}
+                  aria-label="Logout"
+                >
+                  Logout
+                </button>
+              </>
             )}
-          </div>
+          </nav>
         </div>
-      </div>
+      </header>
 
-      <div className="container mx-auto px-4 py-6">
+      <main className="container mx-auto px-4 py-6">
         <Outlet />
-      </div>
+      </main>
     </div>
   );
 }
