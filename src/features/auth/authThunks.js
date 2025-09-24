@@ -27,7 +27,7 @@ export const loginThunk = createAsyncThunk(
   "auth/login",
   async (payload, { rejectWithValue }) => {
     try {
-      return await api("/api/auth/login", { method: "POST", body: payload });
+      return await api("http://localhost:5000/api/auth/login", { method: "POST", body: payload });
     } catch (e) {
       return rejectWithValue(e?.data?.message || e.message);
     }
@@ -38,7 +38,7 @@ export const registerThunk = createAsyncThunk(
   "auth/register",
   async (payload, { rejectWithValue }) => {
     try {
-      return await api("/api/auth/register", { method: "POST", body: payload });
+      return await api("http://localhost:5000/api/auth/register", { method: "POST", body: payload });
     } catch (e) {
       return rejectWithValue(e?.data?.message || e.message);
     }
@@ -50,7 +50,7 @@ export const meThunk = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     try {
       const token = getState()?.auth?.token;
-      return await api("/api/auth/me", { token });
+      return await api("http://localhost:5000/api/auth/me", { token });
     } catch (e) {
       return rejectWithValue(e?.data?.message || e.message);
     }
@@ -62,7 +62,7 @@ export const logoutThunk = createAsyncThunk(
   async (_, { getState, rejectWithValue }) => {
     try {
       const token = getState()?.auth?.token;
-      await api("/api/auth/logout", { method: "POST", token });
+      await api("http://localhost:5000/api/auth/logout", { method: "POST", token });
       return {};
     } catch (e) {
       return rejectWithValue(e?.data?.message || e.message);

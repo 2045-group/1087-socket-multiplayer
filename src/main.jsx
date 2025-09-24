@@ -23,7 +23,9 @@ const NotFound = lazy(() => import('./pages/NotFound.jsx'));
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <ProtectedRoute>
+      <Bubble />
+    </ProtectedRoute>,
     errorElement: <ErrorPage />,
     children: [
       {
@@ -31,14 +33,6 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Home />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "bubble",
-        element: (
-          <ProtectedRoute>
-            <Bubble />
           </ProtectedRoute>
         ),
       },
